@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+model Representante {
+  id                 Int       @id @default(autoincrement())
+  nome               String
+  telefone           String?
+  percentualComissao Float
+  createdAt          DateTime  @default(now())
+  clientes           Cliente[] // lado "1": apenas a lista virtual, sem coluna no banco
+}
+
+model Cliente {
+  id              Int           @id @default(autoincrement())
+  nomeRazaoSocial String
+  telefone        String?
+  endereco        String?
+  createdAt       DateTime      @default(now())
+
+  // lado "N": guarda a chave estrangeira (obrigatoria)
+  representanteId Int
+  representante   Representante @relation(fields: [representanteId], references: [id], onDelete: Restrict)
+}
